@@ -6,7 +6,7 @@
 namespace MD
 {
 
-    template< typename T, size_t N, typename Order = ColumnMajor >
+    template< typename T, size_t N, class Format = Canonical, class Order = RowMajor >
     class Array
     {
 
@@ -44,8 +44,8 @@ namespace MD
 
             /// Multi-dimensional coordinate access.
             ///@{
-                  value_type& operator () ( const shape_type coord )       { return _data[ index< Order >( coord, _shape ) ]; }
-            const value_type  operator () ( const shape_type coord ) const { return _data[ index< Order >( coord, _shape ) ]; }
+                  value_type& operator () ( const shape_type coord )       { return _data[ index< Format, Order >( coord, _shape ) ]; }
+            const value_type  operator () ( const shape_type coord ) const { return _data[ index< Format, Order >( coord, _shape ) ]; }
             ///@}
 
             /// Total elements.

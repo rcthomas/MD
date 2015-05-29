@@ -11,27 +11,32 @@ namespace MD
     struct ColumnMajor {};
     struct RowMajor    {};
 
+    // Array format.
+
+    struct Canonical  {};   ///< Rows first then columns.
+    struct Transposed {};   ///< Columns first then rows.
+
     //
 
-    template< size_t N, class Order = ColumnMajor >
+    template< class Order, size_t N >
     struct Index {};
 
     //
 
     template< size_t N >
-    struct Index< N, ColumnMajor >
+    struct Index< ColumnMajor, N >
     {
         static size_t address( const shape_type< N >& coord, const shape_type< N >& shape )
         {
             auto ii = coord.rbegin();
             size_t result = *(ii++);
-            for( auto ni = shape.rbegin(); ii < coord.rend(); ++ii, ++ni ) result = *ii + *ni * result;
+            for( auto ni = ++shape.rbegin(); ni < shape.rend(); ++ni, ++ii ) result = *ii + *ni * result;
             return result;
         }
     };
 
     template<>
-    struct Index< 1, ColumnMajor >
+    struct Index< ColumnMajor, 1 >
     {
         static size_t address( const shape_type< 1 >& coord, const shape_type< 1 >& shape ) 
         { 
@@ -40,7 +45,7 @@ namespace MD
     };
 
     template<> 
-    struct Index< 2, ColumnMajor >
+    struct Index< ColumnMajor, 2 >
     {
         static size_t address( const shape_type< 2 >& coord, const shape_type< 2 >& shape ) 
         { 
@@ -49,7 +54,7 @@ namespace MD
     };
 
     template<> 
-    struct Index< 3, ColumnMajor >
+    struct Index< ColumnMajor, 3 >
     {
         static size_t address( const shape_type< 3 >& coord, const shape_type< 3 >& shape )
         { 
@@ -58,7 +63,7 @@ namespace MD
     };
 
     template<> 
-    struct Index< 4, ColumnMajor >
+    struct Index< ColumnMajor, 4 >
     {
         static size_t address( const shape_type< 4 >& coord, const shape_type< 4 >& shape )
         { 
@@ -67,7 +72,7 @@ namespace MD
     };
 
     template<> 
-    struct Index< 5, ColumnMajor >
+    struct Index< ColumnMajor, 5 >
     {
         static size_t address( const shape_type< 5 >& coord, const shape_type< 5 >& shape )
         { 
@@ -78,19 +83,19 @@ namespace MD
     //
 
     template< size_t N >
-    struct Index< N, RowMajor >
+    struct Index< RowMajor, N >
     {
         static size_t address( const shape_type< N >& coord, const shape_type< N >& shape )
         {
             auto ii = coord.begin();
             size_t result = *(ii++);
-            for( auto ni = shape.begin(); ii < coord.rend(); ++ii, ++ni ) result = *ii + *ni * result;
+            for( auto ni = ++shape.begin(); ni < shape.end(); ++ni, ++ii ) result = *ii + *ni * result;
             return result;
         }
     };
 
     template<>
-    struct Index< 1, RowMajor >
+    struct Index< RowMajor, 1 >
     {
         static size_t address( const shape_type< 1 >& coord, const shape_type< 1 >& shape ) 
         { 
@@ -99,7 +104,7 @@ namespace MD
     };
 
     template<> 
-    struct Index< 2, RowMajor >
+    struct Index< RowMajor, 2 >
     {
         static size_t address( const shape_type< 2 >& coord, const shape_type< 2 >& shape ) 
         { 
@@ -108,7 +113,7 @@ namespace MD
     };
 
     template<> 
-    struct Index< 3, RowMajor >
+    struct Index< RowMajor, 3 >
     {
         static size_t address( const shape_type< 3 >& coord, const shape_type< 3 >& shape )
         { 
@@ -117,7 +122,7 @@ namespace MD
     };
 
     template<> 
-    struct Index< 4, RowMajor >
+    struct Index< RowMajor, 4 >
     {
         static size_t address( const shape_type< 4 >& coord, const shape_type< 4 >& shape )
         { 
@@ -126,7 +131,7 @@ namespace MD
     };
 
     template<> 
-    struct Index< 5, RowMajor >
+    struct Index< RowMajor, 5 >
     {
         static size_t address( const shape_type< 5 >& coord, const shape_type< 5 >& shape )
         { 
@@ -136,10 +141,16 @@ namespace MD
 
     //
 
-    template< class Order, size_t N >
+    template< class Format, class Order >
+    struct ActualOrder { using type = Order; };
+
+    template<> struct ActualOrder< Transposed, RowMajor    > { using type = ColumnMajor; };
+    template<> struct ActualOrder< Transposed, ColumnMajor > { using type = RowMajor;    };
+
+    template< class Format, class Order, size_t N >
     inline size_t index( const shape_type< N >& coord, const shape_type< N >& shape )
     {
-        return Index< N, Order >::address( coord, shape );
+        return Index< typename ActualOrder< Format, Order >::type, N >::address( coord, shape );
     }
 
 }

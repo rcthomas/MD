@@ -4,8 +4,8 @@ namespace MD
 
     // Constructor.
    
-    template< typename T, size_t N, typename Order >
-    inline Array< T, N, Order >::Array( const shape_type& shape ) noexcept :
+    template< typename T, size_t N, class Format, class Order >
+    inline Array< T, N, Format, Order >::Array( const shape_type& shape ) noexcept :
         _shape( shape                                  ), 
         _size ( shape_size( shape )                    ), 
         _data ( new value_type [ shape_size( shape ) ] ) 
@@ -13,8 +13,8 @@ namespace MD
 
     // Copy constructor.
 
-    template< typename T, size_t N, typename Order >
-    inline Array< T, N, Order >::Array( const Array& array ) noexcept :
+    template< typename T, size_t N, class Format, class Order >
+    inline Array< T, N, Format, Order >::Array( const Array& array ) noexcept :
         _shape( array.shape()                   ), 
         _size ( array.size()                    ), 
         _data ( new value_type [ array.size() ] )
@@ -24,8 +24,8 @@ namespace MD
 
     // Move constructor.
 
-    template< typename T, size_t N, typename Order >
-    inline Array< T, N, Order >::Array( Array&& array ) noexcept :
+    template< typename T, size_t N, class Format, class Order >
+    inline Array< T, N, Format, Order >::Array( Array&& array ) noexcept :
         _shape( array.shape()                   ), 
         _size ( array.size()                    ), 
         _data ( new value_type [ array.size() ] )
@@ -37,8 +37,8 @@ namespace MD
 
     // Copy assignment.
 
-    template< typename T, size_t N, typename Order >
-    inline Array< T, N, Order >& Array< T, N, Order >::operator = ( const Array< T, N, Order >& array ) noexcept
+    template< typename T, size_t N, class Format, class Order >
+    inline Array< T, N, Format, Order >& Array< T, N, Format, Order >::operator = ( const Array< T, N, Format, Order >& array ) noexcept
     {
         if( this != &array )
         {
@@ -54,8 +54,8 @@ namespace MD
 
     // Move assignment.
 
-    template< typename T, size_t N, typename Order >
-    inline Array< T, N, Order >& Array< T, N, Order >::operator = ( Array< T, N, Order >&& array ) noexcept
+    template< typename T, size_t N, class Format, class Order >
+    inline Array< T, N, Format, Order >& Array< T, N, Format, Order >::operator = ( Array< T, N, Format, Order >&& array ) noexcept
     {
         if( this != &array )
         {
@@ -71,8 +71,8 @@ namespace MD
 
     // Destructor.
 
-    template< typename T, size_t N, typename Order >
-    inline Array< T, N, Order >::~Array() 
+    template< typename T, size_t N, class Format, class Order >
+    inline Array< T, N, Format, Order >::~Array() 
     { 
         delete [] _data; 
     }

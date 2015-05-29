@@ -11,7 +11,7 @@ int main()
 
         std::cerr << nframes << std::endl;
 
-        MD::Array< float, 3 > array( { nframes, 2048, 4096 } );
+        MD::Array< float, 3, MD::Transposed > array( { nframes, 2048, 4096 } );
         std::cerr << array.size() * 4 / 1024.0 / 1024.0 / 1024.0 << " GB" << std::endl;
 
         std::cerr << "    fill" << std::endl;
